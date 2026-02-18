@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查询人类制造时间</title>
+
+    <style>
+        /* 1. 整体页面设置 */
+        body {
+            font-family: '华文楷体', 'STKaiti', serif;
+            background-color: #FFF7CD; 
+            text-align: center; 
+            padding-top: 100px; 
+            margin: 0; 
+        }
+
+        /* 2. 卡片样式 */
+        .card {
+            background-color: #FFFDF1; 
+            width: 450px; 
+            margin: 0 auto; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+        }
+
+        /* 3. 标题样式 */
+        h1 {
+            color: #F57799; 
+            font-weight: bold;
+            font-size: 40px; 
+            margin-bottom: 30px; 
+        }
+
+/* 【新增】4. 说明文字样式（修改了“请输入...”的颜色） */
+        .card p {
+            color: #8d6e63; 
+            font-size: 22px; /* 字号加大 */
+            margin-bottom: 35px;
+        }
+
+        /* 5. 输入框样式 */
+        input {
+            padding: 10px; 
+            border: 1px solid #ccc;
+            border-radius: 5px; 
+            font-size: 16px;
+        }
+
+        /* 6. 按钮样式 */
+        button {
+            padding: 10px 20px;
+            background-color: #FB9B8F; 
+            color: white; 
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer; 
+            font-size: 16px;
+            margin-left: 10px; 
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(251, 155, 143, 0.4); 
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e58e82; 
+        }
+
+        /* 7. 结果文字样式 */
+        #result {
+            margin-top: 40px; 
+            font-size: 25px; 
+            color: #dc5f81; 
+            font-weight: bold; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        
+        <h1>查询人类制造时间</h1>
+        
+        <p>请输入人类生日：</p>
+    
+        <input type="date" id="birthdayInput">
+    
+        <button onclick="calculateTime()">开始查询</button>
+    
+        <p id="result"></p>
+
+    </div> 
+    <script>
+        function calculateTime() {
+            let inputDate = document.getElementById('birthdayInput').value;
+            if (!inputDate) {
+                alert("请先选择你的生日！");
+                return;
+            }
+            let birth = new Date(inputDate);
+            birth.setDate(birth.getDate() - 280);
+            const year = birth.getFullYear();
+            const month = (birth.getMonth() + 1).toString().padStart(2, '0');
+            const day = birth.getDate().toString().padStart(2, '0');
+            let resultDate = `${year}/${month}/${day}`;
+            document.getElementById('result').innerText = 
+                "您的“制造时间”大约是：" + resultDate;
+        }
+    </script>
+   
+</body>
+</html>
