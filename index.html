@@ -8,23 +8,30 @@
 
     <style>
         /* 1. 整体页面设置 */
-        body {
-            font-family: '华文楷体', 'STKaiti', serif;
-            background-color: #FFF7CD; 
-            text-align: center; 
-            padding-top: 100px; 
-            margin: 0; 
-        }
+      body {
+    font-family: '华文楷体', 'STKaiti', serif;
+    /* 这里的渐变：从左上角到右下角，颜色从深一点的奶茶色过渡到浅一点的 */
+    background: linear-gradient(135deg, #FFF7CD 0%, #fdf6e3 100%); 
+    /* 必须加这一行，确保背景铺满整个屏幕高度 */
+    min-height: 100vh; 
+    text-align: center; 
+    padding-top: 100px; 
+    margin: 0; 
+}
+
 
         /* 2. 卡片样式 */
         .card {
             background-color: #FFFDF1; 
-            width: 90%; 
-            max-width: 450px;
-            margin: 0 auto; 
-            padding: 40px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    /* 加一条 6 像素宽的顶部边框，颜色用你标题的粉红色 */
+    border-top: 6px solid #e196aa; 
+    
+    width: 90%; 
+    max-width: 450px;
+    margin: 0 auto; 
+    padding: 40px; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         /* 3. 标题样式 */
