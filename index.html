@@ -105,7 +105,13 @@
                 box-sizing: border-box; /* 确保宽度包含边距 */
             }
         }
-        
+        /* 9. 恭喜文字的样式 */
+#message {
+    margin-top: 10px; 
+    font-size: 22px;  
+            color: #dc5f81; 
+    font-weight: bold;
+}
     </style>
 </head>
 
@@ -122,6 +128,7 @@
         <button onclick="calculateTime()">开始查询</button>
     
         <p id="result"></p>
+        <p id="message"></p>
 
     </div> 
     <script>
@@ -139,6 +146,7 @@
             let resultDate = `${year}/${month}/${day}`;
             document.getElementById('result').innerText = 
                 "您的“制造时间”大约是：" + resultDate;
+                document.getElementById('message').innerText = "恭喜！您在这天成为受精卵，开启了地球online旅程！";
         }
     </script>
    
