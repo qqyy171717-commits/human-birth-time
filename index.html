@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查询人类制造时间</title>
+    <title>查询人类合成时间</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+    
 
     <style>
         /* 1. 整体页面设置 */
@@ -111,7 +114,44 @@
     font-size: 22px;  
             color: #dc5f81; 
     font-weight: bold;
+
 }
+
+/* 定义一个“蹦出来”的动画 */
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 装修这个消息框 */
+/* 装修这个消息框（华丽边框版） */
+#message {
+    /* 默认先隐藏 */
+    display: none; 
+    
+    margin-top: 25px;
+    /* 【核心改动 1】加大内边距！ */
+    /* 因为边框图片比较宽，我们需要把文字往中间挤，防止文字压住边框 */
+    padding: 45px; 
+
+    background: url('frame.png') no-repeat center/100% 100%, linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+    
+    
+    /* 文字样式保持不变 */
+    color: #c08a0d;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.6; /*稍微增加一点行高，让文字在框里更舒展*/
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); /* 加一点文字白边，让它在渐变底上更清晰 */
+    
+    /* 阴影让它浮起来 (保留) */
+    box-shadow: 0 10px 20px rgba(252, 182, 159, 0.5);
+    
+    /* 动画 (保留) */
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
     </style>
 </head>
 
@@ -119,7 +159,7 @@
 
     <div class="card">
         
-        <h1>查询人类制造时间</h1>
+        <h1>查询人类合成时间</h1>
         
         <p>请输入人类生日：</p>
     
@@ -143,11 +183,40 @@
             const year = birth.getFullYear();
             const month = (birth.getMonth() + 1).toString().padStart(2, '0');
             const day = birth.getDate().toString().padStart(2, '0');
-            let resultDate = `${year}/${month}/${day}`;
-            document.getElementById('result').innerText = 
-                "您的“制造时间”大约是：" + resultDate;
-                document.getElementById('message').innerText = "恭喜！您在这天成为受精卵，开启了地球online旅程！";
+let resultDate = `${year}/${month}/${day}`;
+
+            document.getElementById('result').innerText = "此人类“合成时间”大约是：" + resultDate;
+
+            // 获取 message 元素
+            let msgBox = document.getElementById('message');
+
+            // 【魔法步骤 1】先强制关掉动画
+            msgBox.style.animation = 'none';
+            
+            // 【魔法步骤 2】挥动“魔法棒”！读取它的高度，强制浏览器立刻刷新页面状态（专业术语叫 Reflow）
+            msgBox.offsetHeight; 
+            
+            // 【魔法步骤 3】填入你的金句
+            msgBox.innerHTML = "🏆 恭喜！<br>此人类在这天成为受精卵，<br>开启了地球Online旅程！";
+
+            // 【魔法步骤 4】重新显示，并把动画控制权交还给 CSS（它就会再蹦一次了）
+            msgBox.style.display = "block";
+            msgBox.style.animation = ""; 
+
+            // 【额外奖励】放个彩带庆祝一下！
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });     
+
+
+let audio = new Audio('coin.mp3');
+            audio.play(); 
+        
+
         }
+        
     </script>
    
 </body>
