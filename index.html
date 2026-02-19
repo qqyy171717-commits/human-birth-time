@@ -22,7 +22,6 @@
     margin: 0; 
 }
 
-
         /* 2. 卡片样式 */
         .card {
             background-color: #FFFDF1; 
@@ -125,30 +124,30 @@
 }
 
 /* 装修这个消息框 */
-/* 装修这个消息框（华丽边框版） */
 #message {
-    /* 默认先隐藏 */
+    /* 默认先隐藏，等计算出来了再显示 */
     display: none; 
     
     margin-top: 25px;
-    /* 【核心改动 1】加大内边距！ */
-    /* 因为边框图片比较宽，我们需要把文字往中间挤，防止文字压住边框 */
-    padding: 45px; 
-
-    background: url('frame.png') no-repeat center/100% 100%, linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+    padding: 15px;
     
+    /* 游戏风格的渐变背景 */
+    background: linear-gradient(to right, #fbf0e0 0%, #e3d7b1 100%);
     
-    /* 文字样式保持不变 */
+    /* 边框和圆角 */
+    border-radius: 12px;
+    border: 2px solid #fff;
+    
+    /* 文字样式 */
     color: #c08a0d;
     font-size: 18px;
     font-weight: bold;
-    line-height: 1.6; /*稍微增加一点行高，让文字在框里更舒展*/
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); /* 加一点文字白边，让它在渐变底上更清晰 */
+    line-height: 1.5;
     
-    /* 阴影让它浮起来 (保留) */
-    box-shadow: 0 10px 20px rgba(252, 182, 159, 0.5);
+    /* 阴影让它浮起来 */
+    box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
     
-    /* 动画 (保留) */
+    /* 应用上面的动画：0.5秒蹦出来 */
     animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
@@ -209,7 +208,6 @@ let resultDate = `${year}/${month}/${day}`;
                 spread: 70,
                 origin: { y: 0.6 }
             });     
-
 
 let audio = new Audio('coin.mp3');
             audio.play(); 
