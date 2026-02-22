@@ -172,50 +172,79 @@
     </div> 
     <script>
         function calculateTime() {
-            let inputDate = document.getElementById('birthdayInput').value;
-            if (!inputDate) {
-                alert("请先选择你的生日！");
-                return;
-            }
-            let birth = new Date(inputDate);
-            birth.setDate(birth.getDate() - 280);
-            const year = birth.getFullYear();
-            const month = (birth.getMonth() + 1).toString().padStart(2, '0');
-            const day = birth.getDate().toString().padStart(2, '0');
-let resultDate = `${year}/${month}/${day}`;
+    let inputDate = document.getElementById('birthdayInput').value;
+    if (!inputDate) {
+        alert("请先选择你的生日！");
+        return;
+    }
 
-            document.getElementById('result').innerText = "此人类“合成时间”大约是：" + resultDate;
+    // 1. 核心计算：算出合成日期
+    let birth = new Date(inputDate);
+    birth.setDate(birth.getDate() - 280);
+    
+    const year = birth.getFullYear();
+    const month = birth.getMonth() + 1; // 获取合成的月份 (1 到 12)
+    const formattedMonth = month.toString().padStart(2, '0');
+    const day = birth.getDate().toString().padStart(2, '0');
+    
+    let resultDate = `${year}/${formattedMonth}/${day}`;
 
-            // 获取 message 元素
-            let msgBox = document.getElementById('message');
+    // 2. 显示算出的日期
+    document.getElementById('result').innerText = "此人类“合成时间”大约是：" + resultDate;
 
-            // 【魔法步骤 1】先强制关掉动画
-            msgBox.style.animation = 'none';
-            
-            // 【魔法步骤 2】挥动“魔法棒”！读取它的高度，强制浏览器立刻刷新页面状态（专业术语叫 Reflow）
-            msgBox.offsetHeight; 
-            
-            // 【魔法步骤 3】填入你的金句
-            msgBox.innerHTML = "🏆 恭喜！<br>此人类在这天成为受精卵，<br>开启了地球Online旅程！";
+    // 🔮 3. 核心财富密码：12个月份的专属“玄学/恶搞”词库
+    // 数组的索引是 0-11，刚好对应 1-12 月，我们用 month - 1 来精准调取！
+    const buffs = [
+        "：跨年夜与冷空气的混合残留物。<br>由于在天寒地冻中完成细胞结合，自带【反射弧绕地球三圈】与【被窝终生VIP】体质。主要有效成分为西北风与宿醉，遇到困难会自动触发“冬眠保护机制”，大脑常年处于加载失败的状态。本质上是一个需要物理加热才能勉强开机的低配服务器。",       // 1月
+        "：情人节与春节油腻饭菜的联合受害者。<br>在单身狗的怨气与七大姑八大姨的催婚声中分裂，自带【压岁钱绝缘体】与【母胎单身防弹衣】属性。从单细胞时期就看透了爱情的虚伪与亲戚的假笑，拥有极其强悍的“独自吃垮自助餐厅”天赋。本质上是一个莫得感情的碳水粉碎机。",      // 2月
+        "：植树节特供版劣质盆栽。<br>沐浴着初春的沙尘暴发芽，自带【光合作用转化极低】与【春困秋乏夏打盹】连招。只要三天不喝奶茶就会在工位上自动枯萎，属于极易养死、绝不开花、且没有任何观赏价值的室内废柴植物。本质上是一个长着人类四肢的重度缺水多肉。",    // 3月
+        "：愚人节与清明节的叠加态产物。<br>生命起源于一个不负责任的玩笑，自带【纯种大冤种】与【随时准备入土为安】的豁达光环。这类受精卵在羊水里就已经学会了平躺，人生座右铭是：“只要我主动当小丑，生活就无法嘲笑我。本质上是一个自我PUA技术满级的全自动背锅侠。",           // 4月
+        "：五一劳动节前后的违规加班产物。<br>合成时父母双方大概率正在回工作微信，导致基因里刻满了资本家的形状。自带【天生帕鲁】与【画饼全自动消化系统】BUFF，在娘胎里就已经签好了三方协议，一出生就熟练掌握八种打卡作弊技巧。本质上是一个出厂自带工牌的极品人形耗材。",       // 5月
+        "：618电商大促的满减赠品。<br>为了凑单而勉强降临这个世界的“便宜的满赠品”，自带【拼夕夕终身砍一刀】与【智商间歇性清零】机制。极易在凌晨三点对各种无用小商品产生强烈共鸣，总是幻想降临义乌。本质上是一个长了腿的快递包装盒。",   // 6月
+        "：三伏天高温发酵的生化武器。<br>在极端高温的催化下，细胞核发生了剧烈的暴躁突变。自带【极度易燃易爆】与【物理超度傻X】隐藏技能，血液里流淌着冰镇可乐与暴躁因子，如果不吹空调，会当场物理融化成一滩烂泥。本质上是一颗失去制冷剂就会当场自毁的行走炸弹。",     // 7月
+        "：七月半中元节限定款盲盒。<br>吸收了过多的天地阴气，自带【阴阳怪气十级学者】与【午夜非物质文化遗产】光环。白天精神萎靡如同丧尸，一到晚上十二点双眼放光，极度热衷于在互联网上到处做法和吃瓜。本质上是一个插了5G网卡的野生猹。",     // 8月
+        "：开学季文具店滞销款回收再利用。<br>伴随着广大学子的哀嚎声形成，自带【一学习就尿频】与【自动过滤有声知识】双重被动。从合成的那一刻起，就对《五年高考三年模拟》产生了严重的排异反应，拿起书本就会导致脑干缺失性发烧。本质上是一个除了正事什么都干的智能摸鱼终端。",       // 9月
+        "：国庆黄金周高速拥堵路段衍生体。<br>在长途车与景区的拥挤中艰难存活，自带【排队两小时起步】与【逢考必堵车】体质。上辈子大概率是个坏掉的红绿灯，只要出门必定遇上人山人海，唯一的舒适区是家里的马桶。本质上是一个只适合在无菌室里独居的社恐蘑菇。",         // 10月
+        "：双十一付完尾款后的悲痛结晶。<br>在父母钱包被掏空的心痛中孕育，自带【极度缺爱且缺钱】与【恩格尔系数爆表】综合征。在羊水里就学会了定金、尾款、分期付的复杂数学运算，一生都在为凑够“满300减50”而奔波劳碌。本质上是一台全年无休且永远显示“余额不足”的破旧POS机。",         // 11月
+        "：年终PPT敷衍凑字数产物。<br>为了完成年度繁衍KPI而仓促制造的半成品，自带【格式刷成精】与【年底精神性离职】究极BUFF。来到人间纯属是为了帮老板避税和凑人数，一生的最高追求就是混吃等死熬到退休。本质上是一个没有灵魂的凑数用回车键。" // 12月
+    ];
 
-            // 【魔法步骤 4】重新显示，并把动画控制权交还给 CSS（它就会再蹦一次了）
-            msgBox.style.display = "block";
-            msgBox.style.animation = ""; 
+    // 取出对应月份的专属文案
+    let magicText = buffs[month - 1]; 
 
-            // 【额外奖励】放个彩带庆祝一下！
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 }
-            });     
+    // 4. 组装并更新留言框的内容
+    let msgBox = document.getElementById('message');
+    
+    msgBox.style.animation = 'none';
+    msgBox.offsetHeight; // 魔法重排，重置动画
+    
+    // 拼装金句和恶搞文案（加入了分割线和不同的颜色突出显示）
+    msgBox.innerHTML = `
+        🏆 恭喜！<br>
+        此人类在这天成为受精卵，<br>
+        开启了地球Online旅程！<br>
+        <hr style="border: 0; border-top: 1px dashed #d8b88e; margin: 15px 0;">
+        <span style="font-size: 16px; color: #a1887f;">🔮 <b>出厂鉴定：</b></span><br>
+        <span style="font-size: 18px; color: #d32f2f;">${month}月合成 ${magicText}</span>
+    `;
 
-let audio = new Audio('coin.mp3');
-            audio.play(); 
-        
+    msgBox.style.display = "block";
+    msgBox.style.animation = ""; 
 
-        }
+    // 5. 放个彩带庆祝一下！
+    confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+    });     
+
+    let audio = new Audio('coin.mp3');
+    audio.play().catch(e => console.log("浏览器限制了自动播放声音哦~")); 
+}
         
     </script>
    
 </body>
 </html>
+
+
