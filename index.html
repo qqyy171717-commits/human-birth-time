@@ -1,250 +1,252 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>查询人类合成时间</title>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
-
     <style>
-        /* 1. 整体页面设置 */
-      body {
-    font-family: '华文楷体', 'STKaiti', serif;
-    /* 这里的渐变：从左上角到右下角，颜色从深一点的奶茶色过渡到浅一点的 */
-    background: linear-gradient(135deg, #FFF7CD 0%, #fdf6e3 100%); 
-    /* 必须加这一行，确保背景铺满整个屏幕高度 */
-    min-height: 100vh; 
-    text-align: center; 
-    padding-top: 100px; 
-    margin: 0; 
-}
+        /* 保持你原本绝美的整体页面设置和卡片样式不变 */
+        body {
+            font-family: '华文楷体', 'STKaiti', serif;
+            background: linear-gradient(135deg, #FFF7CD 0%, #fdf6e3 100%); 
+            min-height: 100vh; 
+            text-align: center; 
+            padding-top: 50px; /* 稍微上移一点，给海报留空间 */
+            margin: 0; 
+        }
 
-        /* 2. 卡片样式 */
         .card {
             background-color: #FFFDF1; 
-    /* 加一条 6 像素宽的顶部边框，颜色用你标题的粉红色 */
-    border-top: 6px solid #e196aa; 
-    
-    width: 90%; 
-    max-width: 450px;
-    margin: 0 auto; 
-    padding: 40px; 
-    border-radius: 20px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-top: 6px solid #e196aa; 
+            width: 90%; 
+            max-width: 450px;
+            margin: 0 auto; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* 3. 标题样式 */
-        h1 {
-            color: #F57799; 
-            font-weight: bold;
-            font-size: 40px; 
-            margin-bottom: 30px; 
-        }
-
-/* 【新增】4. 说明文字样式（修改了“请输入...”的颜色） */
-        .card p {
-            color: #8d6e63; 
-            font-size: 22px; /* 字号加大 */
-            margin-bottom: 35px;
-        }
-
-        /* 5. 输入框样式 */
-        input {
-            padding: 10px; 
-            border: 1px solid #ccc;
-            border-radius: 5px; 
-            font-size: 16px;
-        }
-
-        /* 6. 按钮样式 */
+        h1 { color: #F57799; font-weight: bold; font-size: 35px; margin-bottom: 30px; }
+        .card p { color: #8d6e63; font-size: 22px; margin-bottom: 35px; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        
         button {
-            padding: 10px 20px;
-            background-color: #FB9B8F; 
-            color: white; 
-            border: none; 
-            border-radius: 5px;
-            cursor: pointer; 
-            font-size: 16px;
-            margin-left: 10px; 
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(251, 155, 143, 0.4); 
+            padding: 10px 20px; background-color: #FB9B8F; color: white; 
+            border: none; border-radius: 5px; cursor: pointer; font-size: 16px;
+            margin-left: 10px; font-weight: bold; box-shadow: 0 4px 6px rgba(251, 155, 143, 0.4); 
             transition: background-color 0.3s;
         }
+        button:hover { background-color: #e58e82; }
 
-        button:hover {
-            background-color: #e58e82; 
+        #result { margin-top: 30px; font-size: 25px; color: #dc5f81; font-weight: bold; }
+
+        /* 你精美的结果框样式 */
+        #message {
+            display: none; margin-top: 25px; padding: 15px;
+            background: linear-gradient(to right, #fbf0e0 0%, #e3d7b1 100%);
+            border-radius: 12px; border: 2px solid #fff; color: #c08a0d;
+            font-size: 18px; font-weight: bold; line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
-        /* 7. 结果文字样式 */
-        #result {
-            margin-top: 40px; 
-            font-size: 25px; 
-            color: #dc5f81; 
-            font-weight: bold; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        /* 8. 手机端响应式规则 */
+
+        /* ==========================================
+           【新增】海报相关的样式
+           ========================================== */
+        
+        /* 这是一个极其骚气的生成海报按钮 */
+        #posterBtn {
+            display: none; /* 初始隐藏 */
+            margin-top: 20px;
+            width: 100%;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 30px;
+            font-size: 18px;
+            padding: 12px 0;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 1.5s infinite; /* 呼吸灯特效，勾引点击 */
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 专门用来被截图的幕后画板（完美排版） */
+        #poster-board {
+            position: absolute;
+            left: -9999px; /* 藏在屏幕外面 */
+            width: 350px;
+            background: #FFFDF1;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 4px solid #F57799;
+            box-sizing: border-box;
+        }
+        .poster-title { font-size: 28px; color: #F57799; font-weight: bold; margin-bottom: 20px;}
+        .poster-content { background: #fdf6e3; padding: 15px; border-radius: 10px; color: #8d6e63; text-align: left; line-height: 1.6;}
+        .poster-footer { margin-top: 20px; font-size: 14px; color: #aaa; border-top: 1px dashed #ccc; padding-top: 10px;}
+
+        /* 最终展示给用户的图片 */
+        #final-image {
+            display: none;
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        #save-tip {
+            display: none;
+            color: #dc5f81;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
         @media (max-width: 480px) {
-            h1 {
-                font-size: 28px; /* 标题变小 */
-            }
-            .card p {
-                font-size: 18px; /* 描述文字变小 */
-            }
-            #result {
-                font-size: 24px; /* 结果文字变小 */
-            }
-            button {
-                margin-left: 0;
-                margin-top: 10px;
-                width: 100%; /* 按钮在手机上变成长条，更容易点击 */
-            }
-            input {
-                width: 100%; /* 输入框也变成长条 */
-                box-sizing: border-box; /* 确保宽度包含边距 */
-            }
+            button { margin-left: 0; margin-top: 10px; width: 100%; }
+            input { width: 100%; box-sizing: border-box; }
         }
-        /* 9. 恭喜文字的样式 */
-#message {
-    margin-top: 10px; 
-    font-size: 22px;  
-            color: #dc5f81; 
-    font-weight: bold;
-
-}
-
-/* 定义一个“蹦出来”的动画 */
-@keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    80% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* 装修这个消息框 */
-#message {
-    /* 默认先隐藏，等计算出来了再显示 */
-    display: none; 
-    
-    margin-top: 25px;
-    padding: 15px;
-    
-    /* 游戏风格的渐变背景 */
-    background: linear-gradient(to right, #fbf0e0 0%, #e3d7b1 100%);
-    
-    /* 边框和圆角 */
-    border-radius: 12px;
-    border: 2px solid #fff;
-    
-    /* 文字样式 */
-    color: #c08a0d;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.5;
-    
-    /* 阴影让它浮起来 */
-    box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
-    
-    /* 应用上面的动画：0.5秒蹦出来 */
-    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-}
-
     </style>
 </head>
 
 <body>
-
-    <div class="card">
-        
+    <div class="card" id="main-card">
         <h1>查询人类合成时间</h1>
-        
-        <p>请输入人类生日：</p>
-    
+        <p>请输入你的生日：</p>
         <input type="date" id="birthdayInput">
-    
         <button onclick="calculateTime()">开始查询</button>
-    
-        <p id="result"></p>
-        <p id="message"></p>
-
-    </div> 
-    <script>
-        function calculateTime() {
-    let inputDate = document.getElementById('birthdayInput').value;
-    if (!inputDate) {
-        alert("请先选择你的生日！");
-        return;
-    }
-
-    // 1. 核心计算：算出合成日期
-    let birth = new Date(inputDate);
-    birth.setDate(birth.getDate() - 280);
-    
-    const year = birth.getFullYear();
-    const month = birth.getMonth() + 1; // 获取合成的月份 (1 到 12)
-    const formattedMonth = month.toString().padStart(2, '0');
-    const day = birth.getDate().toString().padStart(2, '0');
-    
-    let resultDate = `${year}/${formattedMonth}/${day}`;
-
-    // 2. 显示算出的日期
-    document.getElementById('result').innerText = "此人类“合成时间”大约是：" + resultDate;
-
-    // 🔮 3. 核心财富密码：12个月份的专属“玄学/恶搞”词库
-    // 数组的索引是 0-11，刚好对应 1-12 月，我们用 month - 1 来精准调取！
-    const buffs = [
-        "：跨年夜与冷空气的混合残留物。<br>由于在天寒地冻中完成细胞结合，自带【反射弧绕地球三圈】与【被窝终生VIP】体质。主要有效成分为西北风与宿醉，遇到困难会自动触发“冬眠保护机制”，大脑常年处于加载失败的状态。本质上是一个需要物理加热才能勉强开机的低配服务器。",       // 1月
-        "：情人节与春节油腻饭菜的联合受害者。<br>在单身狗的怨气与七大姑八大姨的催婚声中分裂，自带【压岁钱绝缘体】与【母胎单身防弹衣】属性。从单细胞时期就看透了爱情的虚伪与亲戚的假笑，拥有极其强悍的“独自吃垮自助餐厅”天赋。本质上是一个莫得感情的碳水粉碎机。",      // 2月
-        "：植树节特供版劣质盆栽。<br>沐浴着初春的沙尘暴发芽，自带【光合作用转化极低】与【春困秋乏夏打盹】连招。只要三天不喝奶茶就会在工位上自动枯萎，属于极易养死、绝不开花、且没有任何观赏价值的室内废柴植物。本质上是一个长着人类四肢的重度缺水多肉。",    // 3月
-        "：愚人节与清明节的叠加态产物。<br>生命起源于一个不负责任的玩笑，自带【纯种大冤种】与【随时准备入土为安】的豁达光环。这类受精卵在羊水里就已经学会了平躺，人生座右铭是：“只要我主动当小丑，生活就无法嘲笑我。本质上是一个自我PUA技术满级的全自动背锅侠。",           // 4月
-        "：五一劳动节前后的违规加班产物。<br>合成时父母双方大概率正在回工作微信，导致基因里刻满了资本家的形状。自带【天生帕鲁】与【画饼全自动消化系统】BUFF，在娘胎里就已经签好了三方协议，一出生就熟练掌握八种打卡作弊技巧。本质上是一个出厂自带工牌的极品人形耗材。",       // 5月
-        "：618电商大促的满减赠品。<br>为了凑单而勉强降临这个世界的“便宜的满赠品”，自带【拼夕夕终身砍一刀】与【智商间歇性清零】机制。极易在凌晨三点对各种无用小商品产生强烈共鸣，总是幻想降临义乌。本质上是一个长了腿的快递包装盒。",   // 6月
-        "：三伏天高温发酵的生化武器。<br>在极端高温的催化下，细胞核发生了剧烈的暴躁突变。自带【极度易燃易爆】与【物理超度傻X】隐藏技能，血液里流淌着冰镇可乐与暴躁因子，如果不吹空调，会当场物理融化成一滩烂泥。本质上是一颗失去制冷剂就会当场自毁的行走炸弹。",     // 7月
-        "：七月半中元节限定款盲盒。<br>吸收了过多的天地阴气，自带【阴阳怪气十级学者】与【午夜非物质文化遗产】光环。白天精神萎靡如同丧尸，一到晚上十二点双眼放光，极度热衷于在互联网上到处做法和吃瓜。本质上是一个插了5G网卡的野生猹。",     // 8月
-        "：开学季文具店滞销款回收再利用。<br>伴随着广大学子的哀嚎声形成，自带【一学习就尿频】与【自动过滤有声知识】双重被动。从合成的那一刻起，就对《五年高考三年模拟》产生了严重的排异反应，拿起书本就会导致脑干缺失性发烧。本质上是一个除了正事什么都干的智能摸鱼终端。",       // 9月
-        "：国庆黄金周高速拥堵路段衍生体。<br>在长途车与景区的拥挤中艰难存活，自带【排队两小时起步】与【逢考必堵车】体质。上辈子大概率是个坏掉的红绿灯，只要出门必定遇上人山人海，唯一的舒适区是家里的马桶。本质上是一个只适合在无菌室里独居的社恐蘑菇。",         // 10月
-        "：双十一付完尾款后的悲痛结晶。<br>在父母钱包被掏空的心痛中孕育，自带【极度缺爱且缺钱】与【恩格尔系数爆表】综合征。在羊水里就学会了定金、尾款、分期付的复杂数学运算，一生都在为凑够“满300减50”而奔波劳碌。本质上是一台全年无休且永远显示“余额不足”的破旧POS机。",         // 11月
-        "：年终PPT敷衍凑字数产物。<br>为了完成年度繁衍KPI而仓促制造的半成品，自带【格式刷成精】与【年底精神性离职】究极BUFF。来到人间纯属是为了帮老板避税和凑人数，一生的最高追求就是混吃等死熬到退休。本质上是一个没有灵魂的凑数用回车键。" // 12月
-    ];
-
-    // 取出对应月份的专属文案
-    let magicText = buffs[month - 1]; 
-
-    // 4. 组装并更新留言框的内容
-    let msgBox = document.getElementById('message');
-    
-    msgBox.style.animation = 'none';
-    msgBox.offsetHeight; // 魔法重排，重置动画
-    
-    // 拼装金句和恶搞文案（加入了分割线和不同的颜色突出显示）
-    msgBox.innerHTML = `
-        🏆 恭喜！<br>
-        此人类在这天成为受精卵，<br>
-        开启了地球Online旅程！<br>
-        <hr style="border: 0; border-top: 1px dashed #d8b88e; margin: 15px 0;">
-        <span style="font-size: 16px; color: #a1887f;">🔮 <b>出厂鉴定：</b></span><br>
-        <span style="font-size: 18px; color: #d32f2f;">${month}月合成 ${magicText}</span>
-    `;
-
-    msgBox.style.display = "block";
-    msgBox.style.animation = ""; 
-
-    // 5. 放个彩带庆祝一下！
-    confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
-    });     
-
-    let audio = new Audio('coin.mp3');
-    audio.play().catch(e => console.log("浏览器限制了自动播放声音哦~")); 
-}
         
+        <p id="result"></p>
+        <div id="message"></div> <button id="posterBtn" onclick="generatePoster()">📸 截取我的专属合成情况鉴定报告</button>
+        <img id="final-image" alt="鉴定书海报">
+        <p id="save-tip">👆 你的合成情况鉴定书已生成！长按上方图片保存，发朋友圈秀一下吧！</p>
+    </div> 
+
+    <div id="poster-board">
+        <div class="poster-title">人类合成情况鉴定报告</div>
+        <div class="poster-content" id="poster-text">
+            属性加载中...
+        </div>
+        <div class="poster-footer">
+            🔮 扫码查询您的合成时间<br>
+            (假装这里有个二维码)
+        </div>
+    </div>
+
+    <script>
+
+        // 1. 声明全局变量（新增了 globalResultDate 用来单独存储合成时间）
+        let globalMagicText = "";
+        let globalMonth = "";
+        let globalResultDate = ""; // 👈 新增的记忆盒子
+        
+        function calculateTime() {
+            let inputDate = document.getElementById('birthdayInput').value;
+            if (!inputDate) { alert("请先选择你的生日！"); return; }
+
+            let birth = new Date(inputDate);
+            birth.setDate(birth.getDate() - 280);
+            
+            const year = birth.getFullYear();
+            const month = birth.getMonth() + 1; 
+            globalMonth = month; 
+            const formattedMonth = month.toString().padStart(2, '0');
+            const day = birth.getDate().toString().padStart(2, '0');
+            
+            // 算出合成时间
+            let resultDate = `${year}/${formattedMonth}/${day}`;
+            
+            // 👈 核心修改 1：把算出来的合成时间存进记忆盒子里
+            globalResultDate = resultDate; 
+
+            document.getElementById('result').innerText = "此人类“合成时间”大约是：" + resultDate;
+
+            const buffs = [
+                "：跨年夜与冷空气的混合残留物。<br>由于在天寒地冻中完成细胞结合，自带【反射弧绕地球三圈】与【被窝终生VIP】体质。主要有效成分为西北风与宿醉，遇到困难会自动触发“冬眠保护机制”，大脑常年处于加载失败的状态。<br>本质上是一个需要物理加热才能勉强开机的低配服务器。", 
+                "：情人节与春节油腻饭菜的联合受害者。<br>在单身狗的怨气与七大姑八大姨的催婚声中分裂，自带【压岁钱绝缘体】与【母胎单身防弹衣】属性。从单细胞时期就看透了爱情的虚伪与亲戚的假笑，拥有极其强悍的“独自吃垮自助餐厅”天赋。<br>本质上是一个莫得感情的碳水粉碎机。", 
+                "：植树节特供版劣质盆栽。<br>沐浴着初春的沙尘暴发芽，自带【光合作用转化极低】与【春困秋乏夏打盹】连招。只要三天不喝奶茶就会在工位上自动枯萎，属于极易养死、绝不开花、且没有任何观赏价值的室内废柴植物。<br>本质上是一个长着人类四肢的重度缺水多肉。", 
+                "：愚人节与清明节的叠加态产物。<br>生命起源于一个不负责任的玩笑，自带【纯种大冤种】与【随时准备入土为安】的豁达光环。这类受精卵在羊水里就已经学会了平躺，人生座右铭是：“只要我主动当小丑，生活就无法嘲笑我”。<br>本质上是一个自我PUA技术满级的全自动背锅侠。", 
+                "：五一劳动节前后的违规加班产物。<br>合成时父母双方大概率正在回工作微信，导致基因里刻满了资本家的形状。自带【天生帕鲁】与【画饼全自动消化系统】BUFF，在娘胎里就已经签好了三方协议，一出生就熟练掌握八种打卡作弊技巧。<br>本质上是一个出厂自带工牌的极品人形耗材。", 
+                "：618电商大促的满减赠品。<br>为了凑单而勉强降临这个世界的“便宜的满赠品”，自带【拼夕夕终身砍一刀】与【智商间歇性清零】机制。极易在凌晨三点对各种无用小商品产生强烈共鸣，总是幻想降临义乌。<br>本质上是一个长了腿的快递包装盒。", 
+                "：三伏天高温发酵的生化武器。<br>在极端高温的催化下，细胞核发生了剧烈的暴躁突变。自带【极度易燃易爆】与【物理超度傻X】隐藏技能，血液里流淌着冰镇可乐与暴躁因子，如果不吹空调，会当场物理融化成一滩烂泥。<br>本质上是一颗失去制冷剂就会当场自毁的行走炸弹。", 
+                "：七月半中元节限定款盲盒。<br>吸收了过多的天地阴气，自带【阴阳怪气十级学者】与【午夜非物质文化遗产】光环。白天精神萎靡如同丧尸，一到晚上十二点双眼放光，极度热衷于在互联网上到处做法和吃瓜。<br>本质上是一个插了5G网卡的野生猹。", 
+                "：开学季文具店滞销款回收再利用。<br>伴随着广大学子的哀嚎声形成，自带【一学习就尿频】与【自动过滤有声知识】双重被动。从合成的那一刻起，就对《五年高考三年模拟》产生了严重的排异反应，拿起书本就会导致脑干缺失性发烧。<br>本质上是一个除了正事什么都干的智能摸鱼终端。", 
+                "：国庆黄金周高速拥堵路段衍生体。<br>在长途车与景区的拥挤中艰难存活，自带【排队两小时起步】与【逢考必堵车】体质。上辈子大概率是个坏掉的红绿灯，只要出门必定遇上人山人海，唯一的舒适区是家里的马桶。<br>本质上是一个只适合在无菌室里独居的社恐蘑菇。", 
+                "：双十一付完尾款后的悲痛结晶。<br>在父母钱包被掏空的心痛中孕育，自带【极度缺爱且缺钱】与【恩格尔系数爆表】综合征。在羊水里就学会了定金、尾款、分期付的复杂数学运算，一生都在为凑够“满300减50”而奔波劳碌。<br>本质上是一台全年无休且永远显示“余额不足”的破旧POS机。", 
+                "：年终PPT敷衍凑字数产物。<br>为了完成年度繁衍KPI而仓促制造的半成品，自带【格式刷成精】与【年底精神性离职】究极BUFF。来到人间纯属是为了帮老板避税和凑人数，一生的最高追求就是混吃等死熬到退休。<br>本质上是一个没有灵魂的凑数用回车键。" 
+            ];
+
+            globalMagicText = buffs[month - 1]; 
+
+            let msgBox = document.getElementById('message');
+            msgBox.style.animation = 'none';
+            msgBox.offsetHeight; 
+            
+            msgBox.innerHTML = `
+                🏆 恭喜！<br>
+                此人类在这天成为受精卵，<br>
+                开启了地球Online旅程！<br>
+                <hr style="border: 0; border-top: 1px dashed #d8b88e; margin: 15px 0;">
+                <span style="font-size: 16px; color: #a1887f;">🔮 <b>合成情况鉴定：</b></span><br>
+                <span style="font-size: 18px; color: #d32f2f;">${month}月合成${globalMagicText}</span>
+            `;
+
+            msgBox.style.display = "block";
+            msgBox.style.animation = ""; 
+
+            // 显示“生成海报”按钮
+            document.getElementById('posterBtn').style.display = "block";
+            // 如果之前生成过图片，先藏起来
+            document.getElementById('final-image').style.display = "none";
+            document.getElementById('save-tip').style.display = "none";
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });     
+        }
+        
+        // 【新增】海报照相魔法
+        function generatePoster() {
+            let boardText = document.getElementById('poster-text');
+            
+            // 👈 核心修改 2：把第二个日期换成刚才存起来的 globalResultDate，并调整了行距(line-height)让它更好看
+            boardText.innerHTML = `
+                <div style="font-size: 18px; color: #F57799; font-weight:bold; margin-bottom: 15px; line-height: 1.6;">
+                    人类生日：${document.getElementById('birthdayInput').value}
+                    <br>合成时间：${globalResultDate} 
+                </div>
+                <b>${globalMonth}月合成${globalMagicText}</b>
+            `;
+
+            let btn = document.getElementById('posterBtn');
+            btn.innerText = "📸 正在生成鉴定书...";
+
+            let posterBoard = document.getElementById('poster-board');
+            html2canvas(posterBoard, { 
+                scale: 2, 
+                backgroundColor: null 
+            }).then(canvas => {
+                let imgData = canvas.toDataURL("image/png");
+                
+                let finalImg = document.getElementById('final-image');
+                finalImg.src = imgData;
+                finalImg.style.display = "block";
+                
+                document.getElementById('save-tip').style.display = "block";
+                
+                btn.innerText = "重新生成鉴定报告";
+                document.getElementById('message').style.display = "none";
+                document.getElementById('result').style.display = "none";
+            });
+        }
     </script>
-   
 </body>
 </html>
-
-
