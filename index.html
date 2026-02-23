@@ -152,7 +152,7 @@
         
         function calculateTime() {
             let inputDate = document.getElementById('birthdayInput').value;
-            if (!inputDate) { alert("请先选择你的生日！"); return; }
+            if (!inputDate) { alert("请先选择人类生日！"); return; }
 
             let birth = new Date(inputDate);
             birth.setDate(birth.getDate() - 280);
